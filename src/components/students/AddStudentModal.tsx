@@ -39,6 +39,7 @@ export default function AddStudentModal({
     event.preventDefault();
     onAddStudent(formData);
     setFormData(emptyStudent);
+    onClose();
   }
 
   return (
