@@ -1,4 +1,5 @@
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import type { FormEvent } from "react";
 import { X } from "lucide-react";
 
 import type { Teacher } from "./TeacherTable";
@@ -14,10 +15,12 @@ export default function EditTeacherModal({
   onClose,
   onSaveTeacher,
 }: EditTeacherModalProps) {
-  const [formData, setFormData] = useState<Teacher | null>(teacher);
+  const [formData, setFormData] = useState<Teacher | null>(null);
 
   useEffect(() => {
-    setFormData(teacher);
+    if (teacher) {
+      setFormData(teacher);
+    }
   }, [teacher]);
 
   if (!teacher || !formData) {
@@ -26,6 +29,9 @@ export default function EditTeacherModal({
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (!formData) return;
+
     onSaveTeacher(formData);
   }
 
@@ -33,66 +39,104 @@ export default function EditTeacherModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm">
       <div className="w-full max-w-2xl rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl">
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-white">Edit Teacher</h2>
+          <h2 className="text-2xl font-bold text-white">
+            Edit Teacher
+          </h2>
+
           <button
             type="button"
             onClick={onClose}
             className="rounded-lg border border-slate-700 p-2 text-slate-300 transition hover:border-cyan-400 hover:text-cyan-300"
-            aria-label="Close edit teacher modal"
           >
             <X size={18} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="grid gap-4 sm:grid-cols-2">
+        <form
+          onSubmit={handleSubmit}
+          className="grid gap-4 sm:grid-cols-2"
+        >
           <input
             required
             value={formData.name}
-            onChange={(event) => setFormData({ ...formData, name: event.target.value })}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                name: e.target.value,
+              })
+            }
             className="rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-400"
           />
+
           <input
             required
             type="email"
             value={formData.email}
-            onChange={(event) => setFormData({ ...formData, email: event.target.value })}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                email: e.target.value,
+              })
+            }
             className="rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-400"
           />
+
           <input
             required
             value={formData.subject}
-            onChange={(event) => setFormData({ ...formData, subject: event.target.value })}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                subject: e.target.value,
+              })
+            }
             className="rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-400"
           />
+
           <input
             required
             value={formData.department}
-            onChange={(event) =>
-              setFormData({ ...formData, department: event.target.value })
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                department: e.target.value,
+              })
             }
             className="rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-400"
           />
+
           <input
             required
             value={formData.classes}
-            onChange={(event) => setFormData({ ...formData, classes: event.target.value })}
-            className="rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-400"
-          />
-          <input
-            min={0}
-            type="number"
-            value={formData.experience}
-            onChange={(event) =>
-              setFormData({ ...formData, experience: Number(event.target.value) })
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                classes: e.target.value,
+              })
             }
             className="rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-400"
           />
-          <select
-            value={formData.status}
-            onChange={(event) =>
+
+          <input
+            required
+            type="number"
+            min={0}
+            value={formData.experience}
+            onChange={(e) =>
               setFormData({
                 ...formData,
-                status: event.target.value as Teacher["status"],
+                experience: Number(e.target.value),
+              })
+            }
+            className="rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-400"
+          />
+
+          <select
+            value={formData.status}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                status: e.target.value as Teacher["status"],
               })
             }
             className="rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-400 sm:col-span-2"
@@ -105,13 +149,14 @@ export default function EditTeacherModal({
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 rounded-xl border border-slate-700 px-5 py-3 font-semibold text-slate-300 transition hover:border-slate-500"
+              className="flex-1 rounded-xl border border-slate-700 px-5 py-3 font-semibold text-slate-300 hover:border-slate-500"
             >
               Cancel
             </button>
+
             <button
               type="submit"
-              className="flex-1 rounded-xl bg-cyan-400 px-5 py-3 font-semibold text-slate-950 transition hover:bg-cyan-300"
+              className="flex-1 rounded-xl bg-cyan-400 px-5 py-3 font-semibold text-slate-950 hover:bg-cyan-300"
             >
               Save Changes
             </button>
