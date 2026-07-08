@@ -16,8 +16,13 @@ export async function createStudent(req: Request, res: Response) {
   try {
     const student = await Student.create(req.body);
     res.status(201).json(student);
-  } catch {
-    res.status(500).json({ message: "Failed to create student" });
+  } catch (error) {
+    console.error("Create Student Error:", error);
+
+    res.status(500).json({
+      message: "Failed to create student",
+      error: error instanceof Error ? error.message : error,
+    });
   }
 }
 
