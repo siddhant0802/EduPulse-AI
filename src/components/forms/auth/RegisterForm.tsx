@@ -1,16 +1,29 @@
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { AuthInput, PasswordInput, PasswordStrength } from '../../auth'
-import { LoadingButton } from '../../ui'
-import { authService } from '../../../services'
-import type { RegisterPayload } from '../../../types/auth'
+import { useState } from "react";
+import { useNavigate } from "react-router";
+import { useForm } from "react-hook-form";
 
-type RegisterFormValues = RegisterPayload & {
-  confirmPassword: string
-}
+import {
+  AuthInput,
+  PasswordInput,
+  PasswordStrength,
+} from "../../auth";
+
+import { LoadingButton } from "../../ui";
+import { authService } from "../../../services";
+
+type RegisterFormValues = {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  role: "admin" | "teacher" | "student";
+};
 
 export function RegisterForm() {
-  const [formError, setFormError] = useState('')
+  const navigate = useNavigate();
+
+  const [formError, setFormError] = useState("");
+
   const {
     register,
     handleSubmit,
@@ -18,85 +31,103 @@ export function RegisterForm() {
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormValues>({
     defaultValues: {
-      name: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      role: "student",
     },
-  })
+  });
 
-  const password = watch('password')
+  const password = watch("password");
 
-  const onSubmit = async ({ name, email, password: submittedPassword }: RegisterFormValues) => {
-    setFormError('')
-    await authService.register({ name, email, password: submittedPassword }).catch(() => {
-      setFormError('Unable to create an account with those details.')
-    })
-  }
+  const onSubmit = async (data: RegisterFormValues) => {
+    try {
+      setFormError("");
+
+      await authService.register({
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        role: data.role,
+      });
+
+      navigate("/login");
+    } catch {
+      setFormError("Unable to create account.");
+    }
+  };
 
   return (
     <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
       <AuthInput
-        autoComplete="name"
-        error={errors.name?.message}
         label="Name"
-        placeholder="Your name"
-        {...register('name', {
-          required: 'Name is required',
-          minLength: {
-            value: 2,
-            message: 'Name must be at least 2 characters',
-          },
+        placeholder="Your Name"
+        {...register("name", {
+          required: "Name is required",
         })}
+        error={errors.name?.message}
       />
 
       <AuthInput
-        autoComplete="email"
-        error={errors.email?.message}
+        type="email"
         label="Email"
         placeholder="you@example.com"
-        type="email"
-        {...register('email', {
-          required: 'Email is required',
-          pattern: {
-            value: /^\S+@\S+\.\S+$/,
-            message: 'Enter a valid email address',
-          },
+        {...register("email", {
+          required: "Email is required",
         })}
+        error={errors.email?.message}
       />
 
+      <div>
+        <label className="mb-2 block text-sm text-white">
+          Account Type
+        </label>
+
+        <select
+          {...register("role")}
+          className="w-full rounded-xl border border-slate-700 bg-slate-900 p-3 text-white"
+        >
+          <option value="student">Student</option>
+          <option value="teacher">Teacher</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+
       <PasswordInput
-        autoComplete="new-password"
-        error={errors.password?.message}
         label="Password"
-        placeholder="Create a password"
-        {...register('password', {
-          required: 'Password is required',
-          minLength: {
-            value: 8,
-            message: 'Password must be at least 8 characters',
-          },
+        placeholder="Password"
+        {...register("password", {
+          required: "Password required",
+          minLength: 8,
         })}
+        error={errors.password?.message}
       />
 
       <PasswordStrength password={password} />
 
       <PasswordInput
-        autoComplete="new-password"
-        error={errors.confirmPassword?.message}
-        label="Confirm password"
-        placeholder="Repeat your password"
-        {...register('confirmPassword', {
-          required: 'Confirm your password',
-          validate: (value) => value === password || 'Passwords do not match',
+        label="Confirm Password"
+        placeholder="Confirm Password"
+        {...register("confirmPassword", {
+          validate: (value) =>
+            value === password || "Passwords do not match",
         })}
+        error={errors.confirmPassword?.message}
       />
 
-      {formError ? <p className="text-sm text-rose-200">{formError}</p> : null}
+      {formError && (
+        <p className="text-red-400">
+          {formError}
+        </p>
+      )}
 
-      <LoadingButton isLoading={isSubmitting} type="submit">
-        Create account
+      <LoadingButton
+        isLoading={isSubmitting}
+        type="submit"
+      >
+        Create Account
       </LoadingButton>
     </form>
-  )
+  );
 }
