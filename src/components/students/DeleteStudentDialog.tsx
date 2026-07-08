@@ -5,7 +5,7 @@ import type { Student } from "./StudentTable";
 interface DeleteStudentDialogProps {
   student: Student | null;
   onClose: () => void;
-  onConfirmDelete: (studentId: number) => void;
+  onConfirmDelete: (studentId: string) => void;
 }
 
 export default function DeleteStudentDialog({

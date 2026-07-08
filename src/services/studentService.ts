@@ -1,7 +1,7 @@
 import { api } from "./api";
 
 export interface Student {
-  id?: string;
+  id: string;
   name: string;
   rollNumber: string;
   email: string;
@@ -13,9 +13,9 @@ export interface Student {
 }
 
 const mapStudent = (student: any): Student => ({
-  id: student._id,
-  name: student.name,
+  id: student._id ?? student.id,
   rollNumber: student.rollNumber,
+  name: student.name,
   email: student.email,
   grade: student.grade,
   section: student.section,
@@ -30,7 +30,7 @@ export const studentService = {
     return data.map(mapStudent);
   },
 
-  async createStudent(student: Student) {
+  async createStudent(student: Omit<Student, "id">) {
     const { data } = await api.post("/students", student);
     return mapStudent(data);
   },
