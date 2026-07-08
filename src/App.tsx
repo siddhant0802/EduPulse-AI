@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from "react-router";
 
+
 import {
   ForgotPasswordPage,
   LoginPage,
@@ -11,6 +12,9 @@ import StudentsPage from "./pages/students/StudentsPage";
 import TeachersPage from "./pages/teachers/TeachersPage";
 import AttendancePage from "./pages/attendance/AttendancePage";
 import ScanAttendancePage from "./pages/Scan/ScanAttendancePage";
+
+import TeacherDashboard from "./pages/teachers/TeacherDashboard";
+import StudentDashboard from "./pages/students/StudentDashboard";
 
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
@@ -28,18 +32,38 @@ function App() {
         element={<ForgotPasswordPage />}
       />
 
-      {/* Student QR Scan (Public) */}
+      {/* Student QR Scan */}
       <Route
         path="/scan"
         element={<ScanAttendancePage />}
       />
 
-      {/* Dashboard */}
+      {/* Admin Dashboard */}
       <Route
-        path="/dashboard"
+  path="/dashboard"
+  element={
+  <ProtectedRoute>
+    <DashboardPage />
+  </ProtectedRoute>
+}
+/>
+
+      {/* Teacher Dashboard */}
+      <Route
+        path="/teacher"
         element={
           <ProtectedRoute>
-            <DashboardPage />
+            <TeacherDashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Student Dashboard */}
+      <Route
+        path="/student"
+        element={
+          <ProtectedRoute>
+            <StudentDashboard />
           </ProtectedRoute>
         }
       />

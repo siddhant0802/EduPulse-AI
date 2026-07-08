@@ -17,19 +17,19 @@ export type UserRole =
 /**
  * User Fields
  */
-export type UserFields = {
+export interface UserFields {
   name: string;
   email: string;
   password: string;
   role: UserRole;
-};
+}
 
 /**
  * User Methods
  */
-type UserMethods = {
+interface UserMethods {
   comparePassword(candidatePassword: string): Promise<boolean>;
-};
+}
 
 /**
  * User Model
@@ -73,22 +73,18 @@ const userSchema = new Schema<
 
     role: {
       type: String,
-      enum: [
-        "admin",
-        "teacher",
-        "student",
-      ],
+      enum: ["admin", "teacher", "student"],
       default: "student",
       required: true,
     },
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 /**
- * Hash Password Before Saving
+ * Hash password before saving
  */
 userSchema.pre("save", async function () {
   if (!this.isModified("password")) {
@@ -99,21 +95,21 @@ userSchema.pre("save", async function () {
 });
 
 /**
- * Compare Password
+ * Compare password
  */
 userSchema.methods.comparePassword = function (
-  candidatePassword: string,
+  candidatePassword: string
 ) {
   return bcrypt.compare(
     candidatePassword,
-    this.password,
+    this.password
   );
 };
 
 /**
- * Export Model
+ * Export User Model
  */
 export const User = model<UserFields, UserModel>(
   "User",
-  userSchema,
+  userSchema
 );

@@ -42,16 +42,25 @@ export function LoginForm() {
       });
 
       login({
-        id: data.user.id,
-        name: data.user.name,
-        email: data.user.email,
-        role: (data.user.role ?? "admin") as
-          | "admin"
-          | "teacher"
-          | "student",
-      });
+  id: data.user.id,
+  name: data.user.name,
+  email: data.user.email,
+  role: data.user.role,
+});
 
-      navigate("/dashboard");
+if (data.user.role === "student") {
+  navigate("/student");
+} else if (data.user.role === "teacher") {
+  navigate("/teacher");
+} else {
+  if (data.user.role === "admin") {
+  navigate("/dashboard");
+} else if (data.user.role === "teacher") {
+  navigate("/teacher");
+} else {
+  navigate("/student");
+}
+}
     } catch (error: any) {
   console.error("LOGIN ERROR:", error);
   console.error("STATUS:", error?.response?.status);
