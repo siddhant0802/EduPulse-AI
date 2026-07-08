@@ -57,6 +57,19 @@ export default function AddStudentModal({
         </div>
 
         <form onSubmit={handleSubmit} className="grid gap-4 sm:grid-cols-2">
+
+          <input
+  required
+  value={formData.name}
+  onChange={(event) =>
+    setFormData({
+      ...formData,
+      name: event.target.value,
+    })
+  }
+  placeholder="Student Name"
+  className="rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-400"
+/>
           <input
   required
   value={formData.rollNumber}
