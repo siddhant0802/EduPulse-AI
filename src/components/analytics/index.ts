@@ -1,0 +1,9 @@
+export { default as AIInsightsCard } from "./AIInsightsCard";
+export { default as AnalyticsOverview } from "./AnalyticsOverview";
+export { default as AttendanceTrendChart } from "./AttendanceTrendChart";
+export { default as DepartmentPerformance } from "./DepartmentPerformance";
+export { default as LowAttendanceAlert } from "./LowAttendanceAlert";
+export { default as PerformanceChart } from "./PerformanceChart";
+export { default as PredictionCard } from "./PredictionCard";
+export { default as QuickStats } from "./QuickStats";
+export { default as TopStudentsCard } from "./TopStudentsCard";
